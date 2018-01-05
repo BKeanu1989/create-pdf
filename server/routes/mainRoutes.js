@@ -49,24 +49,24 @@ router.post('/create-json', (req, res) => {
   const rootDir = path.join(__dirname, '../public', '..', '..');
   for (let x in dataDetails) {
     let artist = x;
+    dataDetails[artist].artistDetails.artist
     if (artist === 'Sayonara') {
 
-        // console.log(x);
-          var cmd = `/usr/local/bin/node ${rootDir}/server/nightmare-pdf-test.js ${artist} ${billDate}`;
-          // var cmd = `/usr/local/bin/node ${rootDir}/server/playground/test.js`;
-          console.log("cmd:", cmd);
-          exec(cmd, (err, stdout, stderr) => {
-            if (err) {
-              console.log(`exec error: ${err}`);
-              return;
-            }
-            console.log('stdout: ', stdout);
-            console.log('stderr: ', stderr);
-            resolve('Success');
-
-          });
+      // console.log(x);
+      var cmd = `/usr/local/bin/node ${rootDir}/server/nightmare-pdf-test.js ${artist} ${billDate}`;
+      // var cmd = `/usr/local/bin/node ${rootDir}/server/playground/test.js`;
+      console.log("cmd:", cmd);
+      exec(cmd, (err, stdout, stderr) => {
+        if (err) {
+          console.log(`exec error: ${err}`);
+          return;
         }
-      };
+        console.log('stdout: ', stdout);
+        console.log('stderr: ', stderr);
+        resolve('Success');
+      });
+    }
+  }
 
     // let cmdCall = new Promise((resolve, reject) => {
     //   var cmd = `/usr/local/bin/node ${rootDir}/server/nightmare-pdf-test.js ${artist} ${billDate}`;
@@ -109,7 +109,7 @@ router.get('/pdf-create', (req,res) => {
       var billingEnd = parsedJSON.abrechnungsEnde;
       parsedJSON = parsedJSON.data[artist];
       console.log("artist:", artist);
-      console.log("new parsedJSON:", parsedJSON);
+      // console.log("new parsedJSON:", parsedJSON);
       var firstName = parsedJSON.artistDetails.vorname;
       var lastName = parsedJSON.artistDetails.nachname;
       var brutto = parsedJSON.artistDetails.brutto == '1' ? true : false;
@@ -120,14 +120,16 @@ router.get('/pdf-create', (req,res) => {
       var to = moment(billingEnd).format('DD.MM.YYYY');
       var billNumberDateWithHiphens = moment(billNumberDate).format('YYYY-MM');
       var billNumberDateWithoutHiphens = moment(billNumberDate).format('YYYYMM');
-      var initBillNumber = parsedJSON.initBillNumber;
-      var registration = moment(parsedJSON.registration).format('YYYY-MM');
+      var initBillNumber = parsedJSON.artistDetails.init_bill_number;
+      var registration = moment(parsedJSON.artistDetails.registration).format('YYYY-MM');
       var difference = moment(billNumberDateWithHiphens).diff(registration, 'months');
       console.log("billNumberDateWithHiphens:", billNumberDateWithHiphens);
       console.log("billNumberDateWithoutHiphens:", billNumberDateWithoutHiphens);
       console.log("registration: ", registration);
       console.log("difference:", difference);
+      console.log("initBillNumber", initBillNumber);
       var billNumber = parseInt(initBillNumber) + parseInt(difference);
+      console.log("BILL number:", billNumber);
       if (billNumber < initBillNumber) {
         throw new Error('earlier than new Billing system');
       }
