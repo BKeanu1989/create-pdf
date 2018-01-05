@@ -1,0 +1,30 @@
+<tr class="single-product">
+  <td class="center-all"><%= object.qty %></td>
+  <td style="relative">
+    <img src="<%= object.guid %>" alt="" class="product-thumbnail">
+    <table style="display: inline; " class="table attributes inner-table">
+      <tr>
+        <td><%= object.product_name %></td>
+      </tr>
+      <tr>
+        <td>Verkaufsdatum:</td>
+        <td><%= object.order_sold_at.substring(0,10) %></td>
+      </tr>
+      <tr>
+        <td><b>Farbe:</b> <%= object.farbe %></td><td><b>Größe: </b> <%= object.groesse %></td>
+      </tr>
+      <tr>
+        <td><b>Modell: </b><%= object.qualitaet %></td><td><b>Artikel: </b><%= object.artikel_type %></td>
+      </tr>
+    </table>
+  </td>
+  <td class="center-all">
+    <%= parseFloat(object.single_price).toFixed(2) %> €
+  </td>
+  <td class="center-all">
+    <%= parseFloat(object.marge).toFixed(2) %> €
+  </td>
+  <td class="center-all">
+    <%= (parseFloat(object.marge) * 1.19).toFixed(2) %> €
+  </td>
+</tr>

@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="expires" content="3600">
+    <title><%= title %></title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/bootstrap/css/bootstrap-small.min.css" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <!-- <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet"> -->
+		<script src="/bootstrap/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<style>
+
+	@font-face {
+	font-family: "Raleway Regular";
+	src: url("/intern/css/Raleway-Regular.ttf");
+	}
+
+	body {
+		font-family: "Raleway Regular";
+		color: #000;
+		font-size: 10pt;
+	}
+
+	.product-thumbnail {
+		width: 100px;
+		height: auto;
+		text-align: center;
+	}
+	.bg-grey {
+		background-color: rgba(234,234,234, 1);
+		margin-top: 10px;
+		margin-bottom: 10px;
+	}
+	h2 {
+		margin-top: 0;
+	}
+	.row {
+		/*margin-left: 0;*/
+		/*margin-right: 0;*/
+	}
+	.center {
+		text-align: center;
+	}
+
+	.banner {
+		position: relative;
+		margin-bottom: 10px;
+	}
+
+	.banner img {
+		filter: opacity(0.7);
+	}
+
+	.mokka-text {
+		position: absolute;
+		width: 100%;
+		top: 60%;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		height: 4em;
+		background-color: rgba(255,255,255,0.4);
+		font-weight: bold;
+		color:rgba(0,0,0,0.4);
+	}
+	.mokka-text span.left {
+		margin-left:15px;
+	}
+	.mokka-text span.right {
+		margin-right:15px;
+	}
+	.label-row {
+		text-align: right;
+	}
+	.descp-row {
+		text-align: left;
+	}
+
+	table.main.table > tbody > tr {
+		border-bottom: 1px solid grey;
+	}
+
+	table.table.main td:nth-child(n+2)  {
+		border-left: 1px solid grey;
+	}
+
+	table.table.main tbody > tr th:nth-child(n+2)  {
+		border-left: 1px solid grey;
+	}
+
+	table.table.main tbody tr:nth-child(n+2) {
+		border-bottom: 1px solid grey;
+	}
+
+	table.table.main tbody tr:last-child {
+		border-bottom: none;
+	}
+
+	.table.main>tbody>tr>th, .table.main>tbody>tr>td {
+		border-top: none;
+	}
+
+	.table.main>tbody>tr>th {
+		text-align: center;
+	}
+
+	.table.inner-table {
+		position: absolute;
+		/* width th 650px - image 100px - margin 10 */
+		/* or whatever ...*/
+		/*width: calc(650px - 350px);*/
+		width: 290px;
+	}
+
+
+
+	.marge {
+		margin-top: 20px;
+	}
+
+	.marge-total {
+		border-bottom: 3px double;
+		font-weight: bold;
+		margin-bottom: 20px;
+	}
+
+	.transaction {
+		margin-top: 20px;
+	}
+
+	.color-grey {
+		color: #575757;
+	}
+
+	table.summary.table {
+		width: 50%;
+		margin: 0 auto;
+	}
+
+
+
+	table td.value {
+		text-align: right;
+	}
+
+	table.attributes {
+		color: #767676;
+	}
+
+	table.main.table table.inner-table tr td {
+		border-left: none;
+		padding: 5px;
+	}
+
+	table.main.table table.inner-table tr {
+		border-bottom: none;
+	}
+
+	table.table.main th.product-info {
+		width: 400px;
+	}
+
+	.table.inner-table>tbody>tr>td {
+		border-top: none;
+	}
+
+	.center-all {
+		text-align: center;
+		vertical-align: middle !important;
+	}
+
+	@media print {
+		body {
+			font-size: 10pt;
+		}
+		body div {
+			display: block;
+			height:100%;
+			position: relative;
+		}
+		body div.custom-footer {
+			margin-top: 60%;
+
+		}
+
+		table.main {
+			page-break-inside: avoid;
+		}
+
+    .single-product {
+    	page-break-inside: avoid;
+		}
+		.custom-footer {
+			position:relative;
+			bottom: 0;
+		}
+
+	}
+
+</style>
+<body class="<%= page %>">
+	<%
+	var dataSet = JSON.parse(data["data"]);
+		var dataSet = JSON.parse(data["data"]);
+		var date = new Date();
+	%>
+		<div class="banner">
+				<img src="/intern/general/abbrechnung_temp_header.png" width="100%" alt="" class="img-responsive">
+			<div class="mokka-text">
+				<span class="left">MOKKA ABRECHNUNG</span>
+				<span class="right">
+					<%= dataSet[0].artist_name %>
+					<p style="margin:0">(<%= firstName + lastName %>)</p>
+				</span>
+			</div>
+		</div>
+		<div class="container bg-grey">
+			<div class="row">
+				<div class="col-xs-6 label-row">
+					<p>Abrechnungszeitraum: </p>
+				</div>
+				<div class="col-xs-6 descp-row">
+					<p><%= from %> <b>-</b> <%= to %></p>
+				</div>
+				<div class="col-xs-6 label-row">
+					<p>Abrechnungsnummer: </p>
+				</div>
+				<div class="col-xs-6 descp-row">
+					<p><%= data['artistID'] %><%= billNumberDateWithoutHiphens %></p>
+				</div>
+			</div>
+		</div>
+
+		<% var margeNettoTotal = 0;
+		var margeBruttoTotal = 0;
+		dataSet.forEach((x) => { %>
+			<% margeNettoTotal += parseFloat(x.marge); %>
+			<% margeBruttoTotal += parseFloat(x.marge) * 1.19 %>
+			<% }) %>
+		<div class="container-fluid marge">
+			<div class="row">
+				<table class="table summary">
+					<tr>
+						<td colspan="2">Auszahlungsbetrag</td>
+					</tr>
+					<tr>
+						<td class="table-label">Brutto</td>
+						<td class="value"><%= margeBruttoTotal.toFixed(2); %> €</td>
+					</tr>
+					<tr>
+						<td class="table-label">-19% MwSt.</td>
+						<td class="value">- <%= (margeBruttoTotal - margeNettoTotal).toFixed(2) %> €</td>
+					</tr>
+					<tr>
+						<td class="table-label">Netto</td>
+						<td class="value"><%= margeNettoTotal.toFixed(2) %> €</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+			<div class="container transaction">
+				<div class="row">
+					<% if (brutto) { %>
+						<p class="center">Der oben angegebene <b><u>Bruttobetrag</u></b> wird umgehend auf dein Konto überwiesen.</p>
+					<% } else { %>
+						<p class="center">Der oben angegebene <b><u>Nettobetrag</u></b> wird umgehend auf dein Konto überwiesen.</p>
+					<% } %>
+				</div>
+			</div>
+	<div class="container custom-footer color-grey">
+		<div class="row">
+			<div class="col-xs-4">
+				<p>Mokka Supply UG (haftungsbeschränkt)</p>
+				<p>Mierendorffplatz 10</p>
+				<p>10589 Berlin</p>
+				<p>Amtsgericht Berlin (Charl.) HRB 169695 B</p>
+			</div>
+			<div class="col-xs-4">
+					<p>info@mokka-merch.com</p>
+					<p>0152 - 53462640</p>
+			</div>
+			<div class="col-xs-4">
+				<p>Fidor Bank AG</p>
+				<p>IBAN - DE 45700222000020077948</p>
+				<p>BIC - FDDODEMMXXX</p>
+				<p>UStID: DE302405959 Steuernummer: 27 / 446 / 31299</p>
+			</div>
+		</div>
+	</div>
+
+	<div class="container table-products">
+		<table class="table main">
+			<th>Anzahl</th>
+			<th class="product-info">Produkt</th>
+			<th>Verkaufspreis</th>
+			<th>Brutto</th>
+			<th>Netto</th>
+		<% dataSet.forEach(function(object) { %>
+			<%- include('partials/single-product', {object: object}); %>
+			<% }) %>
+		</table>
+	</div>
+</body>
+</html>
