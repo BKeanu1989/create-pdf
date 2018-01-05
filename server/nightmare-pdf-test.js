@@ -16,7 +16,8 @@ console.log("date:", date);
   process.argv.forEach((val, index) => {
     console.log(`argv-foreach::${index}: ${val}`);
   });
-
+  // artistCapsLock = artist.toUpperCase();
+// ABRECHNUNG_${billNumber}_${artistID}${date}_${artist}.pdf
 nightmare
   .goto(`http://localhost:3000/pdf-create?artist=${artist}&date=${date}`)
   .pdf(`./abrechnung-${artist}-${date}.pdf`)

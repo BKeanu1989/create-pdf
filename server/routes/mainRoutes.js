@@ -107,12 +107,11 @@ router.get('/pdf-create', (req,res) => {
       var parsedJSON = JSON.parse(data);
       var billNumberDate = parsedJSON.abrechnungsBeginn;
       var billingEnd = parsedJSON.abrechnungsEnde;
-      // parsedJSON = parsedJSON[artist];
+      parsedJSON = parsedJSON.data[artist];
       console.log("artist:", artist);
       console.log("new parsedJSON:", parsedJSON);
-      console.log("new parsedJSON:", parsedJSON["Sayonara"]);
-      var firstName = parsedJSON.artistDetails.firstName;
-      var lastName = parsedJSON.artistDetails.lastName;
+      var firstName = parsedJSON.artistDetails.vorname;
+      var lastName = parsedJSON.artistDetails.nachname;
       var brutto = parsedJSON.artistDetails.brutto == '1' ? true : false;
 
 

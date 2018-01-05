@@ -24,6 +24,7 @@ app.set('view engine', 'ejs');
 app.use(morgan('dev'));
 app.use('/intern/css', express.static(path.join(__dirname, '..', 'public', 'css')));
 app.use('/intern/js', express.static(path.join(__dirname, '..', 'public', 'js')));
+app.use('/intern/images', express.static(path.join(__dirname, '..', 'public', 'images')));
 app.use('/bootstrap/css', express.static(path.join(__dirname, '..', 'public', 'libs', 'bootstrap', 'css')));
 app.use('/bootstrap/js', express.static(path.join(__dirname, '..', 'public', 'libs', 'bootstrap', 'js')));
 app.use('/bootstrap/fonts', express.static(path.join(__dirname, '..', 'public', 'libs', 'bootstrap', 'fonts')));
