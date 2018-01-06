@@ -7,7 +7,7 @@ var router = express.Router();
 var exec = require('child_process').exec;
 const moment = require('moment');
 
-
+const hf_PDF = require('../../utils/create-pdf_helper_functions');
 
 router.post('/json_mokka_create', (req, res) => {
     var jsonObject = req.body;
@@ -36,24 +36,30 @@ router.post('/json_mokka', (req, res) => {
 
 
 router.post('/create-json', (req, res) => {
-  // var dataDetails = JSON.parse(req.body.data);
-  var artistsData = req.body.data;
-
   var dataDetails = req.body.data;
 
   var abrechnungsBeginn = req.body.abrechnungsBeginn;
   var abrechnungsEnde = req.body.abrechnungsEnde;
   var billDate = moment(abrechnungsBeginn).format('YYYY-MM');
+
+  // create json file for month with all artist data
   var jsonString = JSON.stringify(req.body);
   fs.writeFile(`abrechnung-${billDate}.json`, jsonString, 'utf8');
   const rootDir = path.join(__dirname, '../public', '..', '..');
-  for (let x in dataDetails) {
-    let artist = x;
-    dataDetails[artist].artistDetails.artist
-    if (artist === 'Sayonara') {
 
+  for (let x in dataDetails) {
+
+    // electron is 'stupid' and cannot handle POST REQuests
+    // so this way is necessary to have all data
+    let artist = x;
+    if (artist === 'Sayonara') {
+      let initBillNumber = dataDetails[artist].artistDetails.init_bill_number;
+      let registration = dataDetails[artist].artistDetails.registration;
+      let billNumber = hf_PDF.calculateBillNumber(initBillNumber, registration, billDate);
+      let artistID = dataDetails[artist].artistDetails.artistNummer;
       // console.log(x);
-      var cmd = `/usr/local/bin/node ${rootDir}/server/nightmare-pdf-test.js ${artist} ${billDate}`;
+
+      var cmd = `/usr/local/bin/node ${rootDir}/server/nightmare-pdf-test.js ${artist} ${billDate} ${artistID} ${billNumber}`;
       // var cmd = `/usr/local/bin/node ${rootDir}/server/playground/test.js`;
       console.log("cmd:", cmd);
       exec(cmd, (err, stdout, stderr) => {
@@ -121,14 +127,8 @@ router.get('/pdf-create', (req,res) => {
       var billNumberDateWithHiphens = moment(billNumberDate).format('YYYY-MM');
       var billNumberDateWithoutHiphens = moment(billNumberDate).format('YYYYMM');
       var initBillNumber = parsedJSON.artistDetails.init_bill_number;
-      var registration = moment(parsedJSON.artistDetails.registration).format('YYYY-MM');
-      var difference = moment(billNumberDateWithHiphens).diff(registration, 'months');
-      console.log("billNumberDateWithHiphens:", billNumberDateWithHiphens);
-      console.log("billNumberDateWithoutHiphens:", billNumberDateWithoutHiphens);
-      console.log("registration: ", registration);
-      console.log("difference:", difference);
-      console.log("initBillNumber", initBillNumber);
-      var billNumber = parseInt(initBillNumber) + parseInt(difference);
+      var registration = parsedJSON.artistDetails.registration;
+      var billNumber = hf_PDF.calculateBillNumber(initBillNumber, registration, billNumberDate);
       console.log("BILL number:", billNumber);
       if (billNumber < initBillNumber) {
         throw new Error('earlier than new Billing system');
