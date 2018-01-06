@@ -49,29 +49,27 @@ router.post('/create-json', (req, res) => {
 
   for (let x in dataDetails) {
 
-    // electron is 'stupid' and cannot handle POST REQuests
-    // so this way is necessary to have all data
-    let artist = x;
-    if (artist === 'Sayonara') {
-      let initBillNumber = dataDetails[artist].artistDetails.init_bill_number;
-      let registration = dataDetails[artist].artistDetails.registration;
-      let billNumber = hf_PDF.calculateBillNumber(initBillNumber, registration, billDate);
-      let artistID = dataDetails[artist].artistDetails.artistNummer;
-      // console.log(x);
+  // electron is 'stupid' and cannot handle POST REQuests
+  // so this way is necessary to have all data
+  let artist = x;
+    let initBillNumber = dataDetails[artist].artistDetails.init_bill_number;
+    let registration = dataDetails[artist].artistDetails.registration;
+    let billNumber = hf_PDF.calculateBillNumber(initBillNumber, registration, billDate);
+    let artistID = dataDetails[artist].artistDetails.artistNummer;
+    // console.log(x);
+// https://nodejs.org/api/child_process.html
 
-      var cmd = `/usr/local/bin/node ${rootDir}/server/nightmare-pdf-test.js ${artist} ${billDate} ${artistID} ${billNumber}`;
-      // var cmd = `/usr/local/bin/node ${rootDir}/server/playground/test.js`;
-      console.log("cmd:", cmd);
-      exec(cmd, (err, stdout, stderr) => {
-        if (err) {
-          console.log(`exec error: ${err}`);
-          return;
-        }
-        console.log('stdout: ', stdout);
-        console.log('stderr: ', stderr);
-        resolve('Success');
-      });
-    }
+    var cmd = `/usr/local/bin/node ${rootDir}/server/nightmare-pdf-test.js ${artist} ${billDate} ${artistID} ${billNumber}`;
+    // var cmd = `/usr/local/bin/node ${rootDir}/server/playground/test.js`;
+    console.log("cmd:", cmd);
+    exec(cmd, (err, stdout, stderr) => {
+      if (err) {
+        console.log(`exec error: ${err}`);
+        return;
+      }
+      console.log('stdout: ', stdout);
+      console.log('stderr: ', stderr);
+    });
   }
 
     // let cmdCall = new Promise((resolve, reject) => {
@@ -102,7 +100,7 @@ router.post('/create-json', (req, res) => {
 });
 
 router.get('/pdf-create', (req,res) => {
-  console.log("in pdf-create",req.query);
+  // console.log("in pdf-create",req.query);
   // const {artist, date} = req.query;
   const artist = "Sayonara";
   const date = "2017-09";
@@ -114,14 +112,12 @@ router.get('/pdf-create', (req,res) => {
       var billNumberDate = parsedJSON.abrechnungsBeginn;
       var billingEnd = parsedJSON.abrechnungsEnde;
       parsedJSON = parsedJSON.data[artist];
-      console.log("artist:", artist);
       // console.log("new parsedJSON:", parsedJSON);
       var firstName = parsedJSON.artistDetails.vorname;
       var lastName = parsedJSON.artistDetails.nachname;
       var brutto = parsedJSON.artistDetails.brutto == '1' ? true : false;
 
 
-      console.log("var brutto:", brutto);
       var from = moment(billNumberDate).format('DD.MM.YYYY');
       var to = moment(billingEnd).format('DD.MM.YYYY');
       var billNumberDateWithHiphens = moment(billNumberDate).format('YYYY-MM');
@@ -129,11 +125,9 @@ router.get('/pdf-create', (req,res) => {
       var initBillNumber = parsedJSON.artistDetails.init_bill_number;
       var registration = parsedJSON.artistDetails.registration;
       var billNumber = hf_PDF.calculateBillNumber(initBillNumber, registration, billNumberDate);
-      console.log("BILL number:", billNumber);
       if (billNumber < initBillNumber) {
         throw new Error('earlier than new Billing system');
       }
-      console.log("billNumberDateWithoutHiphens:", billNumberDateWithoutHiphens);
       res.render('pdf-create', {
         title: 'PDF Create',
         page: 'pdf-create',

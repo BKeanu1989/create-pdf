@@ -66,8 +66,9 @@
 		justify-content: space-between;
 		height: 4em;
 		background-color: rgba(255,255,255,0.4);
-		font-weight: bold;
-		color:rgba(0,0,0,0.4);
+		font-weight: 800;
+		font-family: Verdana;
+
 	}
 	.mokka-text span.left {
 		margin-left:15px;
@@ -83,19 +84,19 @@
 	}
 
 	table.main.table > tbody > tr {
-		border-bottom: 1px solid grey;
+		border-bottom: 0.25px solid #ddd;
 	}
 
 	table.table.main td:nth-child(n+2)  {
-		border-left: 1px solid grey;
+		border-left: 0.25px solid #ddd;
 	}
 
 	table.table.main tbody > tr th:nth-child(n+2)  {
-		border-left: 1px solid grey;
+		border-left: 0.25px solid #ddd;
 	}
 
 	table.table.main tbody tr:nth-child(n+2) {
-		border-bottom: 1px solid grey;
+		border-bottom: 0.25px solid #ddd;
 	}
 
 	table.table.main tbody tr:last-child {
@@ -163,7 +164,7 @@
 	}
 
 	table.table.main th.product-info {
-		width: 400px;
+		width: 500px;
 	}
 
 	.table.inner-table>tbody>tr>td {
@@ -173,6 +174,10 @@
 	.center-all {
 		text-align: center;
 		vertical-align: middle !important;
+	}
+
+	.small {
+		font-size: 6pt;
 	}
 
 	@media print {
@@ -215,8 +220,8 @@
 			<div class="mokka-text">
 				<span class="left">MOKKA ABRECHNUNG</span>
 				<span class="right">
-					<%= artistDetails.artistName %>
-					<p style="margin:0">(<%= firstName %> <%= lastName %>)</p>
+					<%= artistDetails.artistName.toUpperCase() %>
+					<p style="margin:0; font-weight:normal; font-size: 6pt;">(<%= (firstName + ' ' + lastName).toUpperCase() %>)</p>
 				</span>
 			</div>
 		</div>
@@ -297,11 +302,11 @@
 
 	<div class="container table-products">
 		<table class="table main">
-			<th>Anzahl</th>
-			<th class="product-info">Produkt</th>
-			<th>Verkaufspreis</th>
-			<th>Brutto</th>
-			<th>Netto</th>
+			<th style="font-weight: normal !important;">ANZAHL</th>
+			<th style="font-weight: normal !important; " class="product-info">PRODUKT</th>
+			<th style="font-weight: normal !important; width:70pt">PREIS</th>
+			<th style="font-weight: normal !important;">BRUTTO <span class="small">(marge)</span></th>
+			<th style="font-weight: normal !important;">NETTO <span class="small">(marge)</span></th>
 		<% products.forEach(function(object) { %>
 			<%- include('partials/single-product', {object: object}); %>
 			<% }) %>
