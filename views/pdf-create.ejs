@@ -211,9 +211,12 @@
 </style>
 <body class="<%= page %>">
 	<%
-	console.log("data in view:", data);
+	var anyProducts = false;
 	const artistDetails = data.artistDetails;
 	const products = data.products;
+	if (products.length > 0) {
+		anyProducts = true
+	}
 	%>
 		<div class="banner">
 				<img src="/intern/images/abrechnung_temp_header.png" width="100%" alt="" class="img-responsive">
@@ -221,7 +224,7 @@
 				<span class="left">MOKKA ABRECHNUNG</span>
 				<span class="right">
 					<%= artistDetails.artistName.toUpperCase() %>
-					<p style="margin:0; font-weight:normal; font-size: 6pt;">(<%= (firstName + ' ' + lastName).toUpperCase() %>)</p>
+					<p style="margin:0; font-weight:normal; font-size: 6pt; text-align: right;">(<%= (firstName + ' ' + lastName).toUpperCase() %>)</p>
 				</span>
 			</div>
 		</div>
@@ -248,37 +251,49 @@
 		products.forEach((x) => { %>
 			<% margeNettoTotal += parseFloat(x.marge); %>
 			<% margeBruttoTotal += parseFloat(x.marge) * 1.19 %>
-			<% }) %>
-		<div class="container-fluid marge">
-			<div class="row">
-				<table class="table summary">
-					<tr>
-						<td colspan="2">Auszahlungsbetrag</td>
-					</tr>
-					<tr>
-						<td class="table-label">Brutto</td>
-						<td class="value"><%= margeBruttoTotal.toFixed(2); %> €</td>
-					</tr>
-					<tr>
-						<td class="table-label">-19% MwSt.</td>
-						<td class="value">- <%= (margeBruttoTotal - margeNettoTotal).toFixed(2) %> €</td>
-					</tr>
-					<tr>
-						<td class="table-label">Netto</td>
-						<td class="value"><%= margeNettoTotal.toFixed(2) %> €</td>
-					</tr>
-				</table>
-			</div>
-		</div>
-			<div class="container transaction">
-				<div class="row">
-					<% if (brutto) { %>
-						<p class="center">Der oben angegebene <b><u>Bruttobetrag</u></b> wird umgehend auf dein Konto überwiesen.</p>
-					<% } else { %>
-						<p class="center">Der oben angegebene <b><u>Nettobetrag</u></b> wird umgehend auf dein Konto überwiesen.</p>
-					<% } %>
+		<% }) %>
+
+			<% if(anyProducts) { %>
+				<div class="container-fluid marge">
+					<div class="row">
+						<table class="table summary">
+							<tr>
+								<td colspan="2">Auszahlungsbetrag</td>
+							</tr>
+							<tr>
+								<td class="table-label">Brutto</td>
+								<td class="value"><%= margeBruttoTotal.toFixed(2); %> €</td>
+							</tr>
+							<tr>
+								<td class="table-label">-19% MwSt.</td>
+								<td class="value">- <%= (margeBruttoTotal - margeNettoTotal).toFixed(2) %> €</td>
+							</tr>
+							<tr>
+								<td class="table-label">Netto</td>
+								<td class="value"><%= margeNettoTotal.toFixed(2) %> €</td>
+							</tr>
+						</table>
+					</div>
 				</div>
-			</div>
+				<div class="container transaction">
+					<div class="row">
+						<% if (brutto) { %>
+							<p class="center">Der oben angegebene <b><u>Bruttobetrag</u></b> wird umgehend auf dein Konto überwiesen.</p>
+							<% } else { %>
+								<p class="center">Der oben angegebene <b><u>Nettobetrag</u></b> wird umgehend auf dein Konto überwiesen.</p>
+								<% } %>
+							</div>
+						</div>
+			<% } else { %>
+				<div class="container">
+					<div class="row">
+						<div class="col-md-8 col-md-offset-2" style="height: 200px;">
+							Diesen Monat hast du leider nichts verkauft.
+							In den FAQ's stehen Hinweise wie du deinen Absatz steigern kannst.
+						</div>
+					</div>
+				</div>
+			<% } %>
 	<div class="container custom-footer color-grey">
 		<div class="row">
 			<div class="col-xs-4">
@@ -300,17 +315,19 @@
 		</div>
 	</div>
 
-	<div class="container table-products">
-		<table class="table main">
-			<th style="font-weight: normal !important;">ANZAHL</th>
-			<th style="font-weight: normal !important; " class="product-info">PRODUKT</th>
-			<th style="font-weight: normal !important; width:70pt">PREIS</th>
-			<th style="font-weight: normal !important;">BRUTTO <span class="small">(marge)</span></th>
-			<th style="font-weight: normal !important;">NETTO <span class="small">(marge)</span></th>
-		<% products.forEach(function(object) { %>
-			<%- include('partials/single-product', {object: object}); %>
-			<% }) %>
-		</table>
-	</div>
+	<% if (anyProducts) { %>
+		<div class="container table-products">
+			<table class="table main">
+				<th style="font-weight: normal !important;">ANZAHL</th>
+				<th style="font-weight: normal !important; " class="product-info">PRODUKT</th>
+				<th style="font-weight: normal !important; width:70pt">PREIS</th>
+				<th style="font-weight: normal !important;">BRUTTO <span class="small">(marge)</span></th>
+				<th style="font-weight: normal !important;">NETTO <span class="small">(marge)</span></th>
+				<% products.forEach(function(object) { %>
+					<%- include('partials/single-product', {object: object}); %>
+					<% }) %>
+				</table>
+			</div>
+	<% } %>
 </body>
 </html>

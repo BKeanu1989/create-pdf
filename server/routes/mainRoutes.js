@@ -6,6 +6,8 @@ const path = require('path');
 var router = express.Router();
 var exec = require('child_process').exec;
 const moment = require('moment');
+const queryString = require('query-string');
+
 
 const hf_PDF = require('../../utils/create-pdf_helper_functions');
 
@@ -58,18 +60,33 @@ router.post('/create-json', (req, res) => {
     let artistID = dataDetails[artist].artistDetails.artistNummer;
     // console.log(x);
 // https://nodejs.org/api/child_process.html
+    setTimeout(function() {
+      var cmd = `/usr/local/bin/node ${rootDir}/server/nightmare-pdf-test.js '${artist}' '${billDate}' '${artistID}' '${billNumber}'`;
+      // var cmd = `/usr/local/bin/node ${rootDir}/server/playground/test.js`;
+      // console.log("artist:", artist);
+      exec(cmd, (err, stdout, stderr) => {
+        if (err) {
+          console.log(`exec error: ${err}`);
+          return;
+        }
+        console.log('stdout: ', stdout);
+        console.log('stderr: ', stderr);
+      });
+     }, 3000);
 
-    var cmd = `/usr/local/bin/node ${rootDir}/server/nightmare-pdf-test.js ${artist} ${billDate} ${artistID} ${billNumber}`;
-    // var cmd = `/usr/local/bin/node ${rootDir}/server/playground/test.js`;
-    console.log("cmd:", cmd);
-    exec(cmd, (err, stdout, stderr) => {
-      if (err) {
-        console.log(`exec error: ${err}`);
-        return;
-      }
-      console.log('stdout: ', stdout);
-      console.log('stderr: ', stderr);
-    });
+    // var cmd = `/usr/local/bin/node ${rootDir}/server/nightmare-pdf-test.js '${artist}' '${billDate}' '${artistID}' '${billNumber}'`;
+    // // var cmd = `/usr/local/bin/node ${rootDir}/server/playground/test.js`;
+    // // console.log("artist:", artist);
+    // exec(cmd, (err, stdout, stderr) => {
+    //   if (err) {
+    //     console.log(`exec error: ${err}`);
+    //     return;
+    //   }
+    //   console.log('stdout: ', stdout);
+    //   console.log('stderr: ', stderr);
+    // });
+
+
   }
 
     // let cmdCall = new Promise((resolve, reject) => {
@@ -101,9 +118,8 @@ router.post('/create-json', (req, res) => {
 
 router.get('/pdf-create', (req,res) => {
   // console.log("in pdf-create",req.query);
-  // const {artist, date} = req.query;
-  const artist = "Sayonara";
-  const date = "2017-09";
+  const {artist, date} = req.query;
+  console.log(`artist: ${artist}, date: ${date}`);
   fs.readFile(`abrechnung-${date}.json`, (err, data) => {
       if (err) {
         throw err;
@@ -144,10 +160,49 @@ router.get('/pdf-create', (req,res) => {
     });
 });
 
-router.get('/download', (req, res) => {
-  var rootDir = path.join(__dirname, '../public', '..', '..');
+router.get('/test', (req, res) => {
 
-  res.download(`${rootDir}/test.txt`);
+  const artist = "Der Kolibri";
+  const date = "2017-11";
+  console.log(`artist: ${artist}, date: ${date}`);
+  fs.readFile(`abrechnung-${date}.json`, (err, data) => {
+      if (err) {
+        throw err;
+      }
+      var parsedJSON = JSON.parse(data);
+      var billNumberDate = parsedJSON.abrechnungsBeginn;
+      var billingEnd = parsedJSON.abrechnungsEnde;
+      parsedJSON = parsedJSON.data[artist];
+      // console.log("new parsedJSON:", parsedJSON);
+      var firstName = parsedJSON.artistDetails.vorname;
+      var lastName = parsedJSON.artistDetails.nachname;
+      var brutto = parsedJSON.artistDetails.brutto == '1' ? true : false;
+
+
+      var from = moment(billNumberDate).format('DD.MM.YYYY');
+      var to = moment(billingEnd).format('DD.MM.YYYY');
+      var billNumberDateWithHiphens = moment(billNumberDate).format('YYYY-MM');
+      var billNumberDateWithoutHiphens = moment(billNumberDate).format('YYYYMM');
+      var initBillNumber = parsedJSON.artistDetails.init_bill_number;
+      var registration = parsedJSON.artistDetails.registration;
+      var billNumber = hf_PDF.calculateBillNumber(initBillNumber, registration, billNumberDate);
+      if (billNumber < initBillNumber) {
+        throw new Error('earlier than new Billing system');
+      }
+      res.render('pdf-create', {
+        title: 'PDF Create',
+        page: 'pdf-create',
+        data: parsedJSON,
+        billNumberDateWithoutHiphens: billNumberDateWithoutHiphens,
+        billNumber: billNumber,
+        brutto,
+        from: from,
+        to: to,
+        firstName,
+        lastName
+        // data: data
+      });
+    });
 });
 
 module.exports = router;

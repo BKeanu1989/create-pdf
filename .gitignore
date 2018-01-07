@@ -1,1 +1,7 @@
 node_modules
+.DS_Store
+*.pdf
+*.json
+!sample.json
+*.zip
+*.tar

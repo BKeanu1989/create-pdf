@@ -21,7 +21,7 @@ app.set('views', path.join(__dirname, '/../views'));
 // view engine setup
 app.set('view engine', 'ejs');
 // app.use(compression());
-app.use(morgan('dev'));
+// app.use(morgan('dev'));
 app.use('/intern/css', express.static(path.join(__dirname, '..', 'public', 'css')));
 app.use('/intern/js', express.static(path.join(__dirname, '..', 'public', 'js')));
 app.use('/intern/images', express.static(path.join(__dirname, '..', 'public', 'images')));
