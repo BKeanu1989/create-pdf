@@ -51,11 +51,11 @@ router.post('/create-json', (req, res) => {
 
   let allBills = Object.keys(dataDetails).length;
   let currentBill = 0;
-  for (let x in dataDetails) {
+  for (let artist in dataDetails) {
 
   // electron is 'stupid' and cannot handle POST REQuests
   // so this way is necessary to have all data
-  let artist = x;
+  // let artist = x;
     let initBillNumber = dataDetails[artist].artistDetails.init_bill_number;
     let registration = dataDetails[artist].artistDetails.registration;
     let billNumber = hf_PDF.calculateBillNumber(initBillNumber, registration, billDate);
@@ -63,7 +63,6 @@ router.post('/create-json', (req, res) => {
     setTimeout(function() {
       var cmd = `/usr/local/bin/node ${rootDir}/server/nightmare-pdf-test.js '${artist}' '${billDate}' '${artistID}' '${billNumber}'`;
       // var cmd = `/usr/local/bin/node ${rootDir}/server/playground/test.js`;
-      // console.log("artist:", artist);
       exec(cmd, (err, stdout, stderr) => {
         if (err) {
           console.log(`exec error: ${err}`);
@@ -77,6 +76,8 @@ router.post('/create-json', (req, res) => {
         console.log('stderr: ', stderr);
       });
      }, 3000);
+      console.log("artist:", artist);
+    
   }
 });
 
@@ -99,7 +100,8 @@ router.get('/pdf-create', (req,res) => {
 
 
       var from = moment(billNumberDate).format('DD.MM.YYYY');
-      var to = moment(billingEnd).format('DD.MM.YYYY');
+      // var to = moment(billingEnd).format('DD.MM.YYYY');
+      var to = moment(billNumberDate).clone().endOf('month').format('DD.MM.YYYY');
       var billNumberDateWithHiphens = moment(billNumberDate).format('YYYY-MM');
       var billNumberDateWithoutHiphens = moment(billNumberDate).format('YYYYMM');
       var initBillNumber = parsedJSON.artistDetails.init_bill_number;
@@ -125,8 +127,8 @@ router.get('/pdf-create', (req,res) => {
 });
 
 router.get('/test', (req, res) => {
-
-  hf_PDF.archivePDFS('2017-11');
+  console.log(process.env);
+  res.send('hello');
 });
 
 module.exports = router;

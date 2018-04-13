@@ -1,3 +1,5 @@
+'use strict';
+
 const path = require('path');
 const http = require('http');
 const express = require('express');
@@ -47,14 +49,14 @@ if (env !== 'development') {
         res.status(404).render('500', {
             title: "ERROR",
             page: "error"
-        })
+        });
     });
     // Handle 500
     app.use(function(error, req, res, next) {
         res.status(500).render('500', {
             title: "ERROR",
             page: "error"
-        })
+        });
     });
 }
 

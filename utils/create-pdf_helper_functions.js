@@ -13,6 +13,7 @@ exports.calculateBillNumber = function(initBillNumber, registration, billingMont
   var billNumber = parseInt(initBillNumber) + parseInt(difference);
 
   if (billNumber < initBillNumber) {
+    console.log(billNumber);
     throw new Error('earlier than new Billing system');
   }
 
