@@ -16,7 +16,7 @@
     "nodemon": "^1.14.7"
   },
   "dependencies": {
-    "archiver": "^2.1.0",
+    "archiver": "^4.0.2",
     "body-parser": "^1.18.2",
     "ejs": "^2.5.7",
     "express": "^4.16.2",
